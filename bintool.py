@@ -11,9 +11,7 @@ import sys
 from gui import ui
 
 def do_rotate(num,data):
-	if num > 0: return data[num:]
-	return data[num:] + data[0:num] 
-#		return "L(%d)%s" % (num,data)
+	return data[num:]  + data[0:num]
 
 
 def invert(data):
@@ -23,12 +21,12 @@ def invert(data):
 		if c == "0": i.append("1")
 	return "".join(i)
 
-def asc2bin(data):
+def txt2bin(data):
 	return ''.join([bin(ord(c))[2:].zfill(8) for c in data])
 
-#	return "BIN(%s)" % data
 
-def bin2asc(data):
+
+def bin2txt(data):
 	out =[]
 	length = len(data)
 	i=0
@@ -36,11 +34,7 @@ def bin2asc(data):
 		num =chr(int(data[i:i+8],2))
 		out.append(num)
 		i = i+8
-		#out.append(hex()[2:])
 	return "".join(out)
-
-
-#	return "ASC(%s)" % data
 
 def bin2hex(data):
 	out =[]
@@ -50,45 +44,41 @@ def bin2hex(data):
 		out.append(hex(int(data[i:i+4],2))[2:])
 		i = i+4
 	return "".join(out)
-#	return "HEX(%s)" % binstring
 
 def hex2bin(hexstring):
 	return ''.join([bin(int(c,16))[2:].zfill(4) for c in hexstring])
-#	return "BIN(%s)" % hexstring
 
 def mk_converter(inv, rotate, format = None):
-	# binstr| not| >>2| hex
+
 	def fn_canon(data):
 		src = unicode(data)
 		data = src.encode('utf_8') 
 		#data = bytearray(data)
 		if format == "hex":
 			data = hex2bin(data)
-		if format =="asc":
-			data = asc2bin(data)
+		if format =="txt":
+			data = txt2bin(data)
 		if rotate:
-			data = do_rotate(rotate,data)
+			data = do_rotate(-rotate,data)
 		if inv:
 			data = invert(data)
 		return data
-	#binstr| not| >>2| hex
+
 	def fn_convert(data):
 		src = unicode(data)
 		data = src.encode('utf_8') 
 		if(inv):
 			data = invert(data)
 		if(rotate):
-			data = do_rotate(-rotate,data)
+			data = do_rotate(rotate,data)
 		if format == "hex":
 			data = bin2hex(data)
-		if format == "asc":
-			data = bin2asc(data)
+		if format == "txt":
+			data = bin2txt(data)
 		return data
 
 	return (fn_canon, fn_convert)
 
-#add(field_nbin, mk_converter(1,0,0))
-#add(field_nhex2, mk_converter(1,2,1))
 
 
 
@@ -108,22 +98,34 @@ class BinWindow(QMainWindow):
 		self.fields = []
 		self.connect(self.ui.lineEdit_bin,mk_converter(0,0,None))
 		self.connect(self.ui.lineEdit_nbin,mk_converter(1,0,None))
-		self.connect(self.ui.lineEdit_nhex,mk_converter(1,0,"hex"))
-		self.connect(self.ui.lineEdit_nhex1,mk_converter(1,1,"hex"))
-		self.connect(self.ui.lineEdit_nhex2,mk_converter(1,2,"hex"))
-		self.connect(self.ui.lineEdit_nhex3,mk_converter(1,3,"hex"))
-		self.connect(self.ui.lineEdit_hex,mk_converter(0,0,"hex"))
+		
+		self.connect(self.ui.lineEdit_hex ,mk_converter(0,0,"hex"))
 		self.connect(self.ui.lineEdit_hex1,mk_converter(0,1,"hex"))
 		self.connect(self.ui.lineEdit_hex2,mk_converter(0,2,"hex"))
 		self.connect(self.ui.lineEdit_hex3,mk_converter(0,3,"hex"))
-		self.connect(self.ui.lineEdit_nascii,mk_converter(1,0,"asc"))
-		self.connect(self.ui.lineEdit_nascii1,mk_converter(1,1,"asc"))
-		self.connect(self.ui.lineEdit_nascii2,mk_converter(1,2,"asc"))
-		self.connect(self.ui.lineEdit_nascii3,mk_converter(1,3,"asc"))
-		self.connect(self.ui.lineEdit_ascii,mk_converter(0,0,"asc"))
-		self.connect(self.ui.lineEdit_ascii1,mk_converter(0,1,"asc"))
-		self.connect(self.ui.lineEdit_ascii2,mk_converter(0,2,"asc"))
-		self.connect(self.ui.lineEdit_ascii3,mk_converter(0,3,"asc"))
+
+		self.connect(self.ui.lineEdit_nhex ,mk_converter(1,0,"hex"))
+		self.connect(self.ui.lineEdit_nhex1,mk_converter(1,1,"hex"))
+		self.connect(self.ui.lineEdit_nhex2,mk_converter(1,2,"hex"))
+		self.connect(self.ui.lineEdit_nhex3,mk_converter(1,3,"hex"))
+
+		self.connect(self.ui.lineEdit_txt ,mk_converter(0,0,"txt"))
+		self.connect(self.ui.lineEdit_txt1,mk_converter(0,1,"txt"))
+		self.connect(self.ui.lineEdit_txt2,mk_converter(0,2,"txt"))
+		self.connect(self.ui.lineEdit_txt3,mk_converter(0,3,"txt"))
+		self.connect(self.ui.lineEdit_txt4,mk_converter(0,4,"txt"))
+		self.connect(self.ui.lineEdit_txt5,mk_converter(0,5,"txt"))
+		self.connect(self.ui.lineEdit_txt6,mk_converter(0,6,"txt"))
+		self.connect(self.ui.lineEdit_txt7,mk_converter(0,7,"txt"))
+				
+		self.connect(self.ui.lineEdit_ntxt ,mk_converter(1,0,"txt"))
+		self.connect(self.ui.lineEdit_ntxt1,mk_converter(1,1,"txt"))
+		self.connect(self.ui.lineEdit_ntxt2,mk_converter(1,2,"txt"))
+		self.connect(self.ui.lineEdit_ntxt3,mk_converter(1,3,"txt"))
+		self.connect(self.ui.lineEdit_ntxt4,mk_converter(1,4,"txt"))
+		self.connect(self.ui.lineEdit_ntxt5,mk_converter(1,5,"txt"))
+		self.connect(self.ui.lineEdit_ntxt6,mk_converter(1,6,"txt"))
+		self.connect(self.ui.lineEdit_ntxt7,mk_converter(1,7,"txt"))
 
 	def connect(self, component, update_fns = None):
 		(to_canon_fn, to_specific_fn)  = update_fns;
